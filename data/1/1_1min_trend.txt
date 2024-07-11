@@ -1,0 +1,7 @@
+Symbol: COIN
+Interval: 1min
+Actual Close price Over last 3 intervals: 220.64
+Trend Prediction for next 3 intervals: Trend Down
+Predicted High: 220.77
+Predicted Low: 220.25
+Predicted Close: 220.56

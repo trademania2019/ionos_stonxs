@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; height: 550px; margin-top: 10px;">
+    <img src="{{ url_for('static', filename='banner.png') }}" alt="Banner" style="max-height: 100%; max-width: 100%;">
+</div>
+<body>
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #00164d;">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}" style="color: white;">Stonxs</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}" style="color: white;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('how_to_use') }}" style="color: white;">How to Use</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('account') }}" style="color: white;">My Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('notifications') }}" style="color: white;">Setup Notification</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('market_watch') }}" style="color: white;">Market Watch</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('forum') }}" style="color: white;">Customer Forum</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}" style="color: white;">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}" style="color: white;">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<h1>Setup Notification</h1>
+<form method="POST" action="{{ url_for('notifications') }}" class="notification-form">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.symbol.label }}
+        {{ form.symbol(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.interval.label }}
+        {{ form.interval(class_="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.submit(class_="btn btn-primary") }}
+    </div>
+</form>
+<h2>Existing Notifications</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Interval</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for notification in notifications %}
+        <tr>
+            <td>{{ notification.symbol }}</td>
+            <td>{{ notification.interval }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('cancel_notification') }}">
+                    <input type="hidden" name="notification_id" value="{{ notification.id }}">
+                    <button type="submit" class="btn btn-danger">Cancel</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

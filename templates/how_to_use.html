@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>How to Use - Stonxs</title>
+</head>
+<body>
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #00164d;">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}" style="color: white;">Stonxs</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}" style="color: white;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('how_to_use') }}" style="color: white;">How to Use</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('account') }}" style="color: white;">My Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('notifications') }}" style="color: white;">Setup Notification</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('market_watch') }}" style="color: white;">Market Watch</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('forum') }}" style="color: white;">Customer Forum</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}" style="color: white;">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}" style="color: white;">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5 pt-5">
+    <h1>How to Use Stonxs</h1>
+    <p>Click the link below to view the "How to Use" document:</p>
+    <a href="{{ url_for('how_to_use_pdf') }}" target="_blank">View How to Use Document (PDF)</a>
+    <hr>
+    <h2>Embedded PDF Viewer</h2>
+    <iframe src="{{ url_for('how_to_use_pdf') }}" width="100%" height="600px"></iframe>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trades Summary</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <style>
+        .summary-box {
+            width: 300px;
+            height: 300px;
+            background-color: #f0f0f0;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px;
+            font-size: 1em;
+            text-align: left;
+            color: #fff;
+            padding: 10px;
+        }
+        .summary-box.green {
+            background-color: #28a745; /* Green */
+        }
+        .summary-box.red {
+            background-color: #dc3545; /* Red */
+        }
+        .summary-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .explanation-card {
+            margin: 20px 0;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+
+<body>
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #00164d;">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}" style="color: white;">Stonxs</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}" style="color: white;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('how_to_use') }}" style="color: white;">How to Use</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('account') }}" style="color: white;">My Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('notifications') }}" style="color: white;">Setup Notification</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('market_watch') }}" style="color: white;">Market Watch</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('forum') }}" style="color: white;">Customer Forum</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}" style="color: white;">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}" style="color: white;">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+    <div class="container">
+        <div style="display: flex; justify-content: center; align-items: center; height: 550px; margin-top: 10px;">
+            <img src="{{ url_for('static', filename='banner.png') }}" alt="Banner" style="max-height: 100%; max-width: 100%;">
+        </div>
+        <h1 class="text-center mb-4">AI Algo Based Trades of Last 30 Days</h1>
+        
+        <div class="card explanation-card">
+            <div class="card-body">
+                <h5 class="card-title">Trade Types</h5>
+                <p class="card-text">
+                    <strong>Long Trades</strong>: When you buy a stock at a lower price and sell at a higher price. If you expect the stock to go up, then you take a "Long Position".
+                </p>
+                <p class="card-text">
+                    <strong>Short Trades</strong>: When you borrow stock from a broker (a stock that you don't own), sell it at a high price, and buy it back at a lower price to return to the broker. If you expect the stock to go down, then you take a "Short Position".
+                </p>
+            </div>
+        </div>
+        
+        <div class="card explanation-card">
+            <div class="card-body">
+                <h5 class="card-title">Interval</h5>
+                <p class="card-text">
+                    The interval indicates the time frame the algorithm uses to monitor stock price movement. For example, 1-Minute means the algorithm checks the stock price every minute to decide on buying or selling the stock.
+                </p>
+            </div>
+        </div>
+
+        <div class="card explanation-card">
+            <div class="card-body">
+                <h5 class="card-title">Success Rate</h5>
+                <p class="card-text">
+                    This indicates the percentage of success using the algorithm for this interval. For example, if the success rate is 95.12%, it means out of every 100 trades, you will most likely make a profit on 95 trades.
+                </p>
+            </div>
+        </div>
+        <div class="card explanation-card">
+            <div class="card-body">
+                <h5 class="card-title">Open Position Summary</h5>
+                <p class="card-text">
+                    This shows any possible trade the Algo has a position in, which is not closed yet.
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card explanation-card">
+            <div class="card-body">
+                <h5 class="card-title">Total Profit</h5>
+                <p class="card-text">
+                    This shows the profit the algorithm made using the specified interval over the last 30 days for the trade size you provided.
+                </p>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="summary-tab" data-bs-toggle="tab" href="#summary" role="tab" aria-controls="summary" aria-selected="true">Summary</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="long-trades-tab" data-bs-toggle="tab" href="#long-trades" role="tab" aria-controls="long-trades" aria-selected="false">Long Trades</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="short-trades-tab" data-bs-toggle="tab" href="#short-trades" role="tab" aria-controls="short-trades" aria-selected="false">Short Trades</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+                <h3 class="mt-4">Summary</h3>
+                <div class="summary-container">
+                    {% for line in summary_lines %}
+                    <div class="summary-box {% if line['Total_profit'] > 0 %}green{% else %}red{% endif %}">
+                        <p>
+                            Symbol: {{ line['Symbol'] }}<br>
+                            Interval: {{ line['Interval'] }}<br>
+                            Trade Size: {{ line['Trade_size'] }}<br>
+                            Trade Type: {{ line['Trade_Type'] }}<br>
+                            <strong>SuccessRate: {{ line['SuccessRate'] }}</strong><br>
+                            Total Trades: {{ line['Total_Trades'] }}<br>
+                            Wins: {{ line['Wins'] }}<br>
+                            Losses: {{ line['Losses'] }}<br>
+                            <strong>Total Profit: {{ line['Total_profit'] }}</strong><br>
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="long-trades" role="tabpanel" aria-labelledby="long-trades-tab">
+                <h3 class="mt-4">Long Trades</h3>
+                <table class="table table-3d">
+                    <thead>
+                        <tr>
+                            <th>Interval</th>
+                            <th>Entry Date</th>
+                            <th>Entry Price</th>
+                            <th>Exit Date</th>
+                            <th>Exit Price</th>
+                            <th>Profit</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trade in long_trades %}
+                        <tr class="{% if trade.Status == 'Win' %}win-row{% else %}loss-row{% endif %}">
+                            <td>{{ trade.Interval }}</td>
+                            <td>{{ trade.Entry_date_time }}</td>
+                            <td>{{ trade.Entry_price }}</td>
+                            <td>{{ trade.Exit_date_time }}</td>
+                            <td>{{ trade.Exit_price }}</td>
+                            <td>{{ trade.Profit }}</td>
+                            <td>{{ trade.Status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="short-trades" role="tabpanel" aria-labelledby="short-trades-tab">
+                <h3 class="mt-4">Short Trades</h3>
+                <table class="table table-3d">
+                    <thead>
+                        <tr>
+                            <th>Interval</th>
+                            <th>Entry Date</th>
+                            <th>Entry Price</th>
+                            <th>Exit Date</th>
+                            <th>Exit Price</th>
+                            <th>Profit</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trade in short_trades %}
+                        <tr class="{% if trade.Status == 'Win' %}win-row{% else %}loss-row{% endif %}">
+                            <td>{{ trade.Interval }}</td>
+                            <td>{{ trade.Entry_date_time }}</td>
+                            <td>{{ trade.Entry_price }}</td>
+                            <td>{{ trade.Exit_date_time }}</td>
+                            <td>{{ trade.Exit_price }}</td>
+                            <td>{{ trade.Profit }}</td>
+                            <td>{{ trade.Status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h3 class="mt-4">Open Positions</h3>
+        <table class="table table-3d">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Interval</th>
+                    <th>Entry Date</th>
+                    <th>Entry Price</th>
+                    <th>Status</th>
+                    <th>Type</th> <!-- New column for Type -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for trade in open_positions %}
+                <tr>
+                    <td>{{ trade.symbol }}</td>
+                    <td>{{ trade.Interval }}</td>
+                    <td>{{ trade.Entry_date_time }}</td>
+                    <td>{{ trade.Entry_price }}</td>
+                    <td>{{ trade.Status }}</td>
+                    <td>{{ trade.Type }}</td> <!-- Display Type -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3 class="mt-4">Open Positions Summary</h3>
+        <ul>
+            <li>Total Open Positions: {{ open_positions_summary.Total_open_positions }}</li>
+            <li>Total Open Profit: {{ open_positions_summary.Total_open_profit }}</li>
+        </ul>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Apply color coding for status
+            $("tr.win-row").css("background-color", "#d4edda");
+            $("tr.loss-row").css("background-color", "#f8d7da");
+        });
+    </script>
+</body>
+</html>

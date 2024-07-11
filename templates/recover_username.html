@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Recover Username - Stock Data Analysis</title>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Recover Username</h2>
+        <form action="{{ url_for('recover_username') }}" method="post" class="form-container">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label for="email">Email:</label>
+                {{ form.email(class="form-control") }}
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Recover Username</button>
+        </form>
+    </div>
+</body>
+</html>

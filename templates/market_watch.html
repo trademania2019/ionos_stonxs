@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Market Watch</title>
+</head>
+<div style="display: flex; justify-content: center; align-items: center; height: 550px; margin-top: 10px;">
+    <img src="{{ url_for('static', filename='banner.png') }}" alt="Banner" style="max-height: 100%; max-width: 100%;">
+</div>
+<body>
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #00164d;">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}" style="color: white;">Stonxs</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}" style="color: white;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('how_to_use') }}" style="color: white;">How to Use</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('account') }}" style="color: white;">My Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('notifications') }}" style="color: white;">Setup Notification</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('market_watch') }}" style="color: white;">Market Watch</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('forum') }}" style="color: white;">Customer Forum</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}" style="color: white;">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}" style="color: white;">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container" style="padding-top: 70px;">
+    <h1>Market Watch</h1>
+
+    <h2>Top Gainers</h2>
+    {% if top_gainers %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Name</th>
+                    <th>Price (Intraday)</th>
+                    <th>Change</th>
+                    <th>Volume</th>
+                   <th>Market Cap</th>
+                     
+                </tr>
+            </thead>
+            <tbody>
+                {% for gainer in top_gainers[:5] %}
+                    <tr>
+                        <td>{{ gainer.symbol }}</td>
+                        <td>{{ gainer.name }}</td>
+                        <td>{{ gainer.price }}</td>
+                        <td>{{ gainer.change }}</td>
+                        <td>{{ gainer.volume }}</td>
+                        <td>{{ gainer.market_cap }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No data available for top gainers.</p>
+    {% endif %}
+
+    <h2>Top Losers</h2>
+    {% if top_losers %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Name</th>
+                    <th>Price (Intraday)</th>
+                    <th>Change</th>
+                    <th>Volume</th>
+                    <th>Market Cap</th>
+                    </tr>
+            </thead>
+            <tbody>
+                {% for loser in top_losers[:5] %}
+                    <tr>
+                        <td>{{ loser.symbol }}</td>
+                        <td>{{ loser.name }}</td>
+                        <td>{{ loser.price }}</td>
+                        <td>{{ loser.change }}</td>
+                        <td>{{ loser.volume }}</td>
+                        <td>{{ loser.market_cap }}</td>
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No data available for top losers.</p>
+    {% endif %}
+
+    <h2>Most Active</h2>
+    {% if most_active %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Name</th>
+                    <th>Price (Intraday)</th>
+                    <th>Change</th>
+                    <th>Volume</th>
+                    <th>Market Cap</th>
+                    </tr>
+            </thead>
+            <tbody>
+                {% for active in most_active[:5] %}
+                    <tr>
+                        <td>{{ active.symbol }}</td>
+                        <td>{{ active.name }}</td>
+                        <td>{{ active.price }}</td>
+                        <td>{{ active.change }}</td>
+                        <td>{{ active.volume }}</td>
+                        <td>{{ active.market_cap }}</td>
+                        
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No data available for most active stocks.</p>
+    {% endif %}
+
+    <h2>Most Shorted</h2>
+    {% if most_shorted %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Name</th>
+                    <th>Price (Intraday)</th>
+                    <th>Change</th>
+                    <th>Volume</th>
+                    <th>Market Cap</th>
+                     
+                </tr>
+            </thead>
+            <tbody>
+                {% for shorted in most_shorted[:5] %}
+                    <tr>
+                        <td>{{ shorted.symbol }}</td>
+                        <td>{{ shorted.name }}</td>
+                        <td>{{ shorted.price }}</td>
+                        <td>{{ shorted.change }}</td>
+                        <td>{{ shorted.volume }}</td>
+                        <td>{{ shorted.market_cap }}</td>
+                         
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No data available for most shorted stocks.</p>
+    {% endif %}
+</div>
+</body>
+</html>

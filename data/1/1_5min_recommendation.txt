@@ -1,0 +1,8 @@
+Recommendation: Buy
+Symbol: NVDA
+Interval: 5min
+Actual close price over last 3 intervals: 134.8
+Trend for next 3 intervals: Trend Up
+Predicted High: 135.07
+Predicted Low: 134.41
+Predicted Close: 134.82

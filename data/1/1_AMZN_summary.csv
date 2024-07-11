@@ -1,0 +1,3 @@
+Symbol,Interval,Trade_size,Total_Trades,Wins,Losses,SuccessRate,Total_profit,Trade_Type
+AMZN,5min,100,7,3,4,42.86%,$47.00,Long
+AMZN,5min,100,8,7,1,87.50%,$333.00,Short

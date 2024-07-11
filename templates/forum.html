@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-control {
+            background-color: rgb(53, 3, 14);
+            color: white; /* Optional: To make the text color contrast better with the grey background */
+        }
+        .post-card {
+            border: 2px solid rgb(2, 30, 74);
+            margin-bottom: 1rem;
+        }
+        .post-details {
+            background-color: #f0f0f0;
+            padding: 0.5rem;
+            border-bottom: 1px solid darkblue;
+        }
+    </style>
+    <title>Customer Forum</title>
+</head>
+<body>
+
+    <div style="display: flex; justify-content: center; align-items: center; height: 550px; margin-top: 10px;">
+        <img src="{{ url_for('static', filename='banner.png') }}" alt="Banner" style="max-height: 100%; max-width: 100%;">
+    </div>
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #00164d;">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}" style="color: white;">Stonxs</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}" style="color: white;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('how_to_use') }}" style="color: white;">How to Use</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('account') }}" style="color: white;">My Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('notifications') }}" style="color: white;">Setup Notification</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('market_watch') }}" style="color: white;">Market Watch</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('forum') }}" style="color: white;">Customer Forum</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}" style="color: white;">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}" style="color: white;">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+    <div class="container">
+        <h1>Customer Forum</h1>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.title.label(class="form-control-label") }}
+                {{ form.title(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.content.label(class="form-control-label") }}
+                {{ form.content(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+        <hr>
+        <h2>Forum Posts</h2>
+        {% for post in posts %}
+            <div class="post-card">
+                <div class="post-details">
+                    <small class="text-muted">Posted by {{ post.user.username }} on {{ post.created_at }}</small>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.content }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
